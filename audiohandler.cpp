@@ -2,6 +2,7 @@
 
 AudioHandler::AudioHandler(QAudioInput *audioInput, QObject *parent) : QObject(parent), m_audioInput(audioInput)
 {
+  m_samplingFrequency = m_audioInput->format().sampleRate();
   connect(m_audioInput, SIGNAL(stateChanged(QAudio::State)), this, SLOT(audioInputStateChanged(QAudio::State)));
 }
 
@@ -25,6 +26,11 @@ QVector<DataType> AudioHandler::samples() const
 {
   return m_samples;
 }
+int AudioHandler::samplingFrequency() const
+{
+  return m_samplingFrequency;
+}
+
 
 
 void AudioHandler::appendAudioRead(const QByteArray &arr)

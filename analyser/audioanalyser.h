@@ -3,9 +3,8 @@
 
 #include <vector>
 #include <cmath>
+#include <fftw3.h>
 #include "../defines.h"
-
-typedef std::vector<DataVector> DataVectors;
 class AudioAnalyser
 {
 public:
@@ -13,11 +12,16 @@ public:
   ///
   /// \brief AudioAnalyser class responsible for anlysing audio samples
   /// \param samples vector of ready to use audio samples
+  /// \param samplingFrequency sampling frequency of the audio
   ///
-  AudioAnalyser(const DataVector & samples);
+  AudioAnalyser(const DataVector & samples, int samplingFrequency = 44100);
   DataVectors dividedSamples() const;
+  TransformedVectors transformedFrames() const;
+
 private:
   DataVectors m_dividedSamples;
+  TransformedVectors m_transformedFrames;
+
   ///
   /// \brief divideSamples function which divides samples obtained form the constructor
   /// into smaller vector with size at most FRAME_SIZE
@@ -30,6 +34,13 @@ private:
   /// \return frame with applied Hamming Window function
   ///
   DataVector applyHammingWindow(const DataVector & frame);
+  void transformFrames(const DataVectors & frames);
+  ///
+  /// \brief computeFft function which computes fft on given frames
+  /// \param frames frames with hamming window applied
+  /// \return
+  ///
+  TransformedVectors calculateMagnitudeSpectrum(const DataVectors & frames);
 };
 
 #endif // AUDIOANALYSER_H

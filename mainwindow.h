@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include "audiohandler.h"
 #include "factories/audioinputfactory.h"
-
+#include "analyser/audioanalyser.h"
 namespace Ui {
   class MainWindow;
 }
@@ -23,6 +23,7 @@ private slots:
 private:
   Ui::MainWindow *ui;
   AudioHandler * handler;
+  AudioAnalyser * analyser;
 };
 
 #endif // MAINWINDOW_H
