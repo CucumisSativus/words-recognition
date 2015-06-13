@@ -3,10 +3,10 @@
 
 
 
-AudioAnalyser::AudioAnalyser(const DataVector &samples)
+AudioAnalyser::AudioAnalyser(const DataVector &samples, int samplingFrequency) : m_samplingFrequency(samplingFrequency)
 {
   divideSamples(samples);
-  transformedFrames(m_dividedSamples);
+  transformFrames(m_dividedSamples);
 }
 
 DataVectors AudioAnalyser::dividedSamples() const
@@ -17,6 +17,11 @@ TransformedVectors AudioAnalyser::transformedFrames() const
 {
   return m_transformedFrames;
 }
+int AudioAnalyser::samplingFrequency() const
+{
+  return m_samplingFrequency;
+}
+
 
 
 void AudioAnalyser::divideSamples(const DataVector & samples)
@@ -46,10 +51,10 @@ DataVector AudioAnalyser::applyHammingWindow(const DataVector &frame)
 
 void AudioAnalyser::transformFrames(const DataVectors &frames)
 {
-  m_transformedFrames = computeFft(frames);
+  m_transformedFrames = calculateMagnitudeSpectrum(frames);
 }
 
-TransformedVectors AudioAnalyser::computeFft(const DataVectors &frames)
+TransformedVectors AudioAnalyser::calculateMagnitudeSpectrum(const DataVectors &frames)
 {
   TransformedVectors transformedFrames;
   for(unsigned long frameIndex =0; frameIndex < frames.size(); ++frameIndex){

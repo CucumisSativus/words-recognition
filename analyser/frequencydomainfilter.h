@@ -7,30 +7,25 @@
 class FrequencyDomainFilter
 {
 public:
-  FrequencyDomainFilter(const TransformedVector &transformedFrame, unsigned long frameNumber, int samplingFrequency = 44100, int d =100);
-  double c() const;
-
-  double l() const;
-
-  double r() const;
-
-  int d() const;
-  void setD(int d);
+  FrequencyDomainFilter(const TransformedVector &transformedFrame, unsigned long filterOrder, int samplingFrequency = 44100, int distanceBetweenFilters =100);
 
   FilteredFrame filter();
-private:
-  int m_frameNumber;
-  int m_samplingFrequency;
-  int m_d;
+  int distanceBetweenFilters() const;
+  void setDistanceBetweenFilters(int distanceBetweenFilters);
 
-  double m_c;
-  double m_l;
-  double m_r;
+private:
+  int m_filterOrder;
+  int m_samplingFrequency;
+  int m_distanceBetweenFilters;
+
   TransformedVector m_transformedFrame;
   double calculateMi(double m);
-  double calculateC();
-  double calculateL();
-  double calculateR();
+  double calculateC(int k);
+  double calculateL(int k);
+  double calculateR(int k);
+  double filterBank(double sample);
+  double orderFilterBank(int order, int sample);
+
 };
 
 #endif // FREQUENCYDOMAINFILTER_H

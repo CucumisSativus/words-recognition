@@ -1,71 +1,73 @@
 #include "frequencydomainfilter.h"
 
-FrequencyDomainFilter::FrequencyDomainFilter(const TransformedVector &transformedFrame, unsigned long frameNumber, int samplingFrequency, int d) :
-  m_frameNumber(frameNumber), m_samplingFrequency(samplingFrequency), m_transformedFrame(transformedFrame)
+FrequencyDomainFilter::FrequencyDomainFilter(const TransformedVector &transformedFrame, unsigned long filterOrder, int samplingFrequency, int distanceBetweenFilters) :
+  m_filterOrder(filterOrder), m_samplingFrequency(samplingFrequency), m_distanceBetweenFilters(distanceBetweenFilters), m_transformedFrame(transformedFrame)
 {
-  m_c = calculateC();
-  m_l = calculateL();
-  m_r = calculateR();
-}
-double FrequencyDomainFilter::c() const
-{
-  return m_c;
-}
-double FrequencyDomainFilter::l() const
-{
-  return m_l;
-}
-double FrequencyDomainFilter::r() const
-{
-  return m_r;
-}
-int FrequencyDomainFilter::d() const
-{
-  return m_d;
-}
-
-void FrequencyDomainFilter::setD(int d)
-{
-  m_d = d;
 }
 
 FilteredFrame FrequencyDomainFilter::filter()
 {
   FilteredFrame filteredFrame;
-  for(TransformedVector::iterator it = m_transformedFrame.begin(); it != m_transformedFrame.end(); ++it){
-      TransformedSample sample = *it;
-      double filteredSample = 0;
-      if(sample >= m_l && sample >= m_c){
-          filteredSample = (sample - m_l)/(m_c - m_l);
-        }
-      else if (sample >= m_c && sample >= m_r) {
-          filteredSample = (m_r - sample) / (m_r - m_c);
-        }
-      filteredFrame.push_back(filteredSample);
-    }
+  for(unsigned long i =0 ; i < m_transformedFrame.size()/2; ++i){
+      double sample = m_transformedFrame.at(i);
+      double filterResult = filterBank((m_samplingFrequency/m_transformedFrame.size() * i ));
+      filteredFrame.push_back(sample * filterResult);
+   }
+  return filteredFrame;
+}
+int FrequencyDomainFilter::distanceBetweenFilters() const
+{
+  return m_distanceBetweenFilters;
 }
 
-
-
-
+void FrequencyDomainFilter::setDistanceBetweenFilters(int distanceBetweenFilters)
+{
+  m_distanceBetweenFilters = distanceBetweenFilters;
+}
 
 double FrequencyDomainFilter::calculateMi(double m)
 {
   return 700 * ( std::pow(10, m/2595) -1);
 }
 
-double FrequencyDomainFilter::calculateC()
+double FrequencyDomainFilter::calculateC(int k)
 {
-  return calculateMi(m_frameNumber * m_d);
+  return calculateMi(k * m_distanceBetweenFilters);
 }
 
-double FrequencyDomainFilter::calculateL()
+double FrequencyDomainFilter::calculateL(int k)
 {
-  return calculateMi((m_frameNumber - 1) * m_d);
+  return calculateMi((k - 1) * m_distanceBetweenFilters);
 }
 
-double FrequencyDomainFilter::calculateR()
+double FrequencyDomainFilter::calculateR(int k)
 {
-  return calculateMi((m_frameNumber +1) * m_d);
+  return calculateMi((k +1) * m_distanceBetweenFilters);
+}
+
+double FrequencyDomainFilter::filterBank(double sample)
+{
+  double result =0;
+  for(int k=0; k< m_filterOrder; ++k){
+      result += orderFilterBank(k, sample);
+    }
+  return result;
+}
+
+double FrequencyDomainFilter::orderFilterBank(int order, int sample)
+{
+    double c = calculateC(order);
+    double l = calculateL(order);
+    double r = calculateR(order);
+
+    if(sample >= l && sample >= c){
+        return (sample - l)/(c - l);
+      }
+    else if (sample >= c && sample >= r) {
+        return (r - sample) / (r - c);
+      }
+    else{
+        return 0;
+      }
 }
 

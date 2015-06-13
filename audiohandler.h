@@ -36,12 +36,15 @@ public:
   ///
   QVector<DataType> samples() const;
 
+  int samplingFrequency() const;
+
 private:
   QAudioInput * m_audioInput;
   QIODevice * m_recordingDevice;
   bool m_recording;
   QByteArray m_rawSamples;
   QDataVector m_samples;
+  int m_samplingFrequency;
 
   void appendAudioRead(const QByteArray & arr);
   ///

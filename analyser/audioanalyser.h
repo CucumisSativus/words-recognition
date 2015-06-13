@@ -18,9 +18,12 @@ public:
   DataVectors dividedSamples() const;
   TransformedVectors transformedFrames() const;
 
+  int samplingFrequency() const;
+
 private:
   DataVectors m_dividedSamples;
   TransformedVectors m_transformedFrames;
+  int m_samplingFrequency;
 
   ///
   /// \brief divideSamples function which divides samples obtained form the constructor
