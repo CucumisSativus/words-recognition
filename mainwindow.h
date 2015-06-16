@@ -5,6 +5,8 @@
 #include "audiohandler.h"
 #include "factories/audioinputfactory.h"
 #include "analyser/audioanalyser.h"
+#include "mfcccoefficientsviewer.h"
+
 namespace Ui {
   class MainWindow;
 }
@@ -24,6 +26,7 @@ private:
   Ui::MainWindow *ui;
   AudioHandler * handler;
   AudioAnalyser * analyser;
+  MfccCoefficientsViewer * viewer;
 };
 
 #endif // MAINWINDOW_H

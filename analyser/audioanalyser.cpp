@@ -22,10 +22,15 @@ int AudioAnalyser::samplingFrequency() const
   return m_samplingFrequency;
 }
 
-FilteredFrame AudioAnalyser::mfccCoefficents(unsigned long filterOrder, int distanceBetweenFilters) const
+FilteredFrames AudioAnalyser::mfccCoefficents(unsigned long filterOrder, int distanceBetweenFilters) const
 {
-  FrequencyDomainFilter filter(m_transformedFrames, filterOrder, m_samplingFrequency, distanceBetweenFilters);
-  return filter.filter();
+  FilteredFrames frames;
+//  for(unsigned long i=0; i< m_transformedFrames.size(); ++i){
+  for(unsigned long i=0; i< 2; ++i){
+    FrequencyDomainFilter filter(m_transformedFrames.at(i), filterOrder, m_samplingFrequency, distanceBetweenFilters);
+    frames.push_back(filter.filter());
+    }
+  return frames;
 }
 
 

@@ -21,7 +21,7 @@ public:
 
   int samplingFrequency() const;
 
-  FilteredFrame mfccCoefficents() const;
+  FilteredFrames mfccCoefficents(unsigned long filterOrder, int distanceBetweenFilters) const;
 
 private:
   DataVectors m_dividedSamples;

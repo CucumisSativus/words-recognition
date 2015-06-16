@@ -9,5 +9,6 @@ typedef double TransformedSample;
 typedef std::vector< TransformedSample > TransformedVector;
 typedef std::vector<TransformedVector> TransformedVectors;
 typedef std::vector<TransformedSample> FilteredFrame;
+typedef std::vector<FilteredFrame> FilteredFrames;
 #endif // DEFINES_H
 

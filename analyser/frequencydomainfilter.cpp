@@ -11,8 +11,11 @@ FilteredFrame FrequencyDomainFilter::filter()
   for(unsigned long n =0; n< obtainF(); ++n){
       double filterSum =0;
       for(unsigned long k =0; k < m_filterOrder - 1; ++k){
-          double lnSK = std::log(bandpassFiltration(k));
-          double cosTrans = std::cos((2 * M_PI * (2 * k +1) * n)/ 4 * m_filterOrder);
+          double sK = bandpassFiltration(k);
+          double lnSK = std::log(sK);
+          double cosNumerator = (2.0 * M_PI * (2 * k +1) * n);
+          double cosDenominator = 4.0 * m_filterOrder;
+          double cosTrans = std::cos(cosNumerator/ cosDenominator);
           filterSum += std::pow(lnSK, obtainGamma()) * cosTrans;
         }
       filteredFrame.push_back(filterSum);
