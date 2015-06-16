@@ -21,13 +21,16 @@ SOURCES += main.cpp\
     audiohandler.cpp \
     factories/audioinputfactory.cpp \
     analyser/audioanalyser.cpp \
-    analyser/frequencydomainfilter.cpp
+    analyser/frequencydomainfilter.cpp \
+    mfcccoefficientsviewer.cpp
 
 HEADERS  += mainwindow.h \
     audiohandler.h \
     factories/audioinputfactory.h \
     analyser/audioanalyser.h \
     defines.h \
-    analyser/frequencydomainfilter.h
+    analyser/frequencydomainfilter.h \
+    mfcccoefficientsviewer.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    mfcccoefficientsviewer.ui

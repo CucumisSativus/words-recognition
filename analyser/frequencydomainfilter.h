@@ -14,7 +14,7 @@ public:
   void setDistanceBetweenFilters(int distanceBetweenFilters);
 
 private:
-  int m_filterOrder;
+  unsigned long m_filterOrder;
   int m_samplingFrequency;
   int m_distanceBetweenFilters;
 
@@ -23,8 +23,12 @@ private:
   double calculateC(int k);
   double calculateL(int k);
   double calculateR(int k);
-  double filterBank(double sample);
+  double filterBank(double sample, unsigned long filterLevel);
   double orderFilterBank(int order, int sample);
+  double bandpassFiltration(unsigned long k);
+
+  unsigned long obtainF();
+  double obtainGamma();
 
 };
 

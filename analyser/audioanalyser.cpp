@@ -22,6 +22,12 @@ int AudioAnalyser::samplingFrequency() const
   return m_samplingFrequency;
 }
 
+FilteredFrame AudioAnalyser::mfccCoefficents(unsigned long filterOrder, int distanceBetweenFilters) const
+{
+  FrequencyDomainFilter filter(m_transformedFrames, filterOrder, m_samplingFrequency, distanceBetweenFilters);
+  return filter.filter();
+}
+
 
 
 void AudioAnalyser::divideSamples(const DataVector & samples)

@@ -44,4 +44,5 @@ void MainWindow::performAnalysis()
   handler->prepareSamples();
   DataVector stdSampled = handler->samples().toStdVector();
   analyser = new AudioAnalyser(stdSampled);
+  FilteredFrame = analyser->mfccCoefficents(30, 100);
 }

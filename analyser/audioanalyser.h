@@ -5,6 +5,7 @@
 #include <cmath>
 #include <fftw3.h>
 #include "../defines.h"
+#include "frequencydomainfilter.h"
 class AudioAnalyser
 {
 public:
@@ -19,6 +20,8 @@ public:
   TransformedVectors transformedFrames() const;
 
   int samplingFrequency() const;
+
+  FilteredFrame mfccCoefficents() const;
 
 private:
   DataVectors m_dividedSamples;

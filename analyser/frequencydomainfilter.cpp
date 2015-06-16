@@ -8,11 +8,15 @@ FrequencyDomainFilter::FrequencyDomainFilter(const TransformedVector &transforme
 FilteredFrame FrequencyDomainFilter::filter()
 {
   FilteredFrame filteredFrame;
-  for(unsigned long i =0 ; i < m_transformedFrame.size()/2; ++i){
-      double sample = m_transformedFrame.at(i);
-      double filterResult = filterBank((m_samplingFrequency/m_transformedFrame.size() * i ));
-      filteredFrame.push_back(sample * filterResult);
-   }
+  for(unsigned long n =0; n< obtainF(); ++n){
+      double filterSum =0;
+      for(unsigned long k =0; k < m_filterOrder - 1; ++k){
+          double lnSK = std::log(bandpassFiltration(k));
+          double cosTrans = std::cos((2 * M_PI * (2 * k +1) * n)/ 4 * m_filterOrder);
+          filterSum += std::pow(lnSK, obtainGamma()) * cosTrans;
+        }
+      filteredFrame.push_back(filterSum);
+    }
   return filteredFrame;
 }
 int FrequencyDomainFilter::distanceBetweenFilters() const
@@ -45,10 +49,10 @@ double FrequencyDomainFilter::calculateR(int k)
   return calculateMi((k +1) * m_distanceBetweenFilters);
 }
 
-double FrequencyDomainFilter::filterBank(double sample)
+double FrequencyDomainFilter::filterBank(double sample, unsigned long filterLevel)
 {
   double result =0;
-  for(int k=0; k< m_filterOrder; ++k){
+  for(unsigned long k=0; k< filterLevel; ++k){
       result += orderFilterBank(k, sample);
     }
   return result;
@@ -69,5 +73,26 @@ double FrequencyDomainFilter::orderFilterBank(int order, int sample)
     else{
         return 0;
       }
+}
+
+double FrequencyDomainFilter::bandpassFiltration(unsigned long k)
+{
+  double sum =0;
+  for(unsigned long i =0 ; i < m_transformedFrame.size()/2; ++i){
+      double sample = m_transformedFrame.at(i);
+      double filterResult = filterBank((m_samplingFrequency/m_transformedFrame.size() * i ), k);
+      sum += sample * filterResult;
+    }
+  return sum;
+}
+
+unsigned long FrequencyDomainFilter::obtainF()
+{
+  return 12;
+}
+
+double FrequencyDomainFilter::obtainGamma()
+{
+  return 1;
 }
 
