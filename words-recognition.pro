@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     factories/audioinputfactory.cpp \
     analyser/audioanalyser.cpp \
     analyser/frequencydomainfilter.cpp \
-    mfcccoefficientsviewer.cpp
+    mfcccoefficientsviewer.cpp \
+    qcustom-plot/qcustomplot.cpp
 
 HEADERS  += mainwindow.h \
     audiohandler.h \
@@ -30,7 +31,8 @@ HEADERS  += mainwindow.h \
     analyser/audioanalyser.h \
     defines.h \
     analyser/frequencydomainfilter.h \
-    mfcccoefficientsviewer.h
+    mfcccoefficientsviewer.h \
+    qcustom-plot/qcustomplot.h
 
 FORMS    += mainwindow.ui \
     mfcccoefficientsviewer.ui

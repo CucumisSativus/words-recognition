@@ -25,8 +25,8 @@ int AudioAnalyser::samplingFrequency() const
 FilteredFrames AudioAnalyser::mfccCoefficents(unsigned long filterOrder, int distanceBetweenFilters) const
 {
   FilteredFrames frames;
-//  for(unsigned long i=0; i< m_transformedFrames.size(); ++i){
-  for(unsigned long i=0; i< 2; ++i){
+  for(unsigned long i=0; i< m_transformedFrames.size(); ++i){
+//  for(unsigned long i=0; i< 2; ++i){
     FrequencyDomainFilter filter(m_transformedFrames.at(i), filterOrder, m_samplingFrequency, distanceBetweenFilters);
     frames.push_back(filter.filter());
     }
@@ -89,6 +89,8 @@ TransformedVectors AudioAnalyser::calculateMagnitudeSpectrum(const DataVectors &
         }
 
       transformedFrames.push_back(transformedFrameVector);
+      fftw_free(frameToBeTransformed);
+      fftw_free(transformedFrame);
     }
   return transformedFrames;
 }

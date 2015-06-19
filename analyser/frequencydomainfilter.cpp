@@ -12,6 +12,9 @@ FilteredFrame FrequencyDomainFilter::filter()
       double filterSum =0;
       for(unsigned long k =0; k < m_filterOrder - 1; ++k){
           double sK = bandpassFiltration(k);
+          if(sK == 0){
+              continue;
+            }
           double lnSK = std::log(sK);
           double cosNumerator = (2.0 * M_PI * (2 * k +1) * n);
           double cosDenominator = 4.0 * m_filterOrder;
