@@ -10,7 +10,6 @@ AudioHandler::~AudioHandler()
 {
   if(m_recording){
       m_audioInput -> stop();
-      delete m_recordingDevice;
     }
 }
 
@@ -71,6 +70,8 @@ void AudioHandler::audioInputStateChanged(QAudio::State newState)
 
 void AudioHandler::startRecording()
 {
+  m_rawSamples.clear();
+  m_samples.clear();
   m_recording = true;
   m_recordingDevice =  m_audioInput->start();
 }
@@ -79,7 +80,7 @@ void AudioHandler::stopRecording()
 {
   m_recording = false;
   m_audioInput->stop();
-  delete m_recordingDevice;
+  m_recordingDevice = nullptr;
 }
 
 void AudioHandler::audioReadReady()
