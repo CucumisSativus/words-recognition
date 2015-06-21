@@ -2,6 +2,7 @@
 #define MFCCCOEFFICIENTSVIEWER_H
 
 #include <QWidget>
+#include <QDateTime>
 #include "defines.h"
 namespace Ui {
   class MfccCoefficientsViewer;
@@ -19,7 +20,8 @@ private:
   Ui::MfccCoefficientsViewer *ui;
 
   void setupTable();
-  void insertCoefficients(unsigned long frameNum, const FilteredFrame & coefficients);
+  void insertCoefficients(unsigned long frameNum, const FilteredFrame & coefficients);\
+  void insertDataToPlot(const FilteredFrames & framesCoefficients);
 };
 
 #endif // MFCCCOEFFICIENTSVIEWER_H

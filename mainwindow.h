@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QAudioOutput>
 #include "audiohandler.h"
 #include "factories/audioinputfactory.h"
 #include "analyser/audioanalyser.h"
@@ -22,11 +23,15 @@ private slots:
   void startRecording();
   void stopRecording();
   void performAnalysis();
+  void playRecorded();
+
+  void audioOutputStateCHanged(QAudio::State newState);
 private:
   Ui::MainWindow *ui;
   AudioHandler * handler;
   AudioAnalyser * analyser;
-  MfccCoefficientsViewer * viewer;
+  QAudioOutput * audioOutput;
+  QVector<MfccCoefficientsViewer * > coefficientsWindows;
 };
 
 #endif // MAINWINDOW_H

@@ -36,6 +36,7 @@ public:
   ///
   QVector<DataType> samples() const;
 
+  QAudioFormat format() const;
   int samplingFrequency() const;
 
 private:

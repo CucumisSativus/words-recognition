@@ -25,6 +25,11 @@ QVector<DataType> AudioHandler::samples() const
 {
   return m_samples;
 }
+
+QAudioFormat AudioHandler::format() const
+{
+  return m_audioInput->format();
+}
 int AudioHandler::samplingFrequency() const
 {
   return m_samplingFrequency;

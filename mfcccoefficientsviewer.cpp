@@ -10,6 +10,8 @@ MfccCoefficientsViewer::MfccCoefficientsViewer(const FilteredFrames &framesCoeff
   for(unsigned long i = 0; i< framesCoefficients.size(); ++i){
       insertCoefficients(i, framesCoefficients.at(i));
     }
+  insertDataToPlot(framesCoefficients);
+  ui->dateLabel->setText(QDateTime::currentDateTime().toString("hh:mm:ss.zzz"));
 }
 
 MfccCoefficientsViewer::~MfccCoefficientsViewer()
@@ -47,4 +49,20 @@ void MfccCoefficientsViewer::insertCoefficients(unsigned long frameNum, const Fi
       ui->coefficientsTable->setItem(row, 1, numberItem);
       ui->coefficientsTable->setItem(row, 2, valueItem);
     }
+}
+
+void MfccCoefficientsViewer::insertDataToPlot(const FilteredFrames &framesCoefficients)
+{
+  QVector<double> x,y ;
+  double currentX =0;
+  for(unsigned long i =0; i< 2; ++i){
+      for(unsigned long j=0; j< framesCoefficients.at(i).size(); ++j){
+          x.push_back(currentX++);
+          y.push_back(framesCoefficients.at(i).at(j));
+        }
+    }
+  ui->plot->addGraph();
+  ui->plot->graph(0)->setData(x,y);
+  ui->plot->xAxis->setRange(0, currentX);
+  ui->plot->replot();
 }
