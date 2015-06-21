@@ -72,7 +72,10 @@ void MainWindow::playRecorded()
       }
   audioOutput = new QAudioOutput(format, this);
   connect(audioOutput, SIGNAL(stateChanged(QAudio::State)), this, SLOT(audioOutputStateCHanged(QAudio::State)));
-  audioOutput->start(handler->recordingDevice());
+  outputBuffer = new QBuffer(new QByteArray(handler->rawSamples()));
+  outputBuffer->open(QIODevice::ReadOnly);
+  audioOutput->start(outputBuffer);
+  ui->buttonPlay->setEnabled(false);
 }
 
 void MainWindow::audioOutputStateCHanged(QAudio::State newState)
@@ -81,14 +84,20 @@ void MainWindow::audioOutputStateCHanged(QAudio::State newState)
           case QAudio::IdleState:
               // Finished playing (no more data)
               audioOutput->stop();
+              outputBuffer->close();
+              delete outputBuffer;
               delete audioOutput;
               break;
 
           case QAudio::StoppedState:
+
               // Stopped for other reasons
               if (audioOutput->error() != QAudio::NoError) {
+                  qWarning() << "playback stopped with errors";
                   qWarning() << audioOutput->error();
               }
+              qDebug() << "playback stopped without errors";
+              ui->buttonPlay->setEnabled(true);
               break;
 
           default:

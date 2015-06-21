@@ -25,7 +25,7 @@ private:
   double calculateR(int k);
   double filterBank(double sample, unsigned long filterLevel);
   double orderFilterBank(int order, int sample);
-  double bandpassFiltration(unsigned long k);
+  double amplitudeInMells(unsigned long k);
 
   unsigned long obtainF();
   double obtainGamma();

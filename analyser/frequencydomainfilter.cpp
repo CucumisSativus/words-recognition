@@ -11,7 +11,7 @@ FilteredFrame FrequencyDomainFilter::filter()
   for(unsigned long n =0; n< obtainF(); ++n){
       double filterSum =0;
       for(unsigned long k =0; k < m_filterOrder - 1; ++k){
-          double sK = bandpassFiltration(k);
+          double sK = amplitudeInMells(k);
           if(sK == 0){
               continue;
             }
@@ -70,10 +70,10 @@ double FrequencyDomainFilter::orderFilterBank(int order, int sample)
     double l = calculateL(order);
     double r = calculateR(order);
 
-    if(sample >= l && sample >= c){
+    if(sample >= l && sample <= c){
         return (sample - l)/(c - l);
       }
-    else if (sample >= c && sample >= r) {
+    else if (sample >= c && sample <= r) {
         return (r - sample) / (r - c);
       }
     else{
@@ -81,12 +81,12 @@ double FrequencyDomainFilter::orderFilterBank(int order, int sample)
       }
 }
 
-double FrequencyDomainFilter::bandpassFiltration(unsigned long k)
+double FrequencyDomainFilter::amplitudeInMells(unsigned long k)
 {
   double sum =0;
   for(unsigned long i =0 ; i < m_transformedFrame.size()/2; ++i){
       double sample = m_transformedFrame.at(i);
-      double filterResult = filterBank((m_samplingFrequency/m_transformedFrame.size() * i ), k);
+      double filterResult = filterBank(((i* m_samplingFrequency)/m_transformedFrame.size()), k);
       sum += sample * filterResult;
     }
   return sum;

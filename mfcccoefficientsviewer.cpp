@@ -55,14 +55,20 @@ void MfccCoefficientsViewer::insertDataToPlot(const FilteredFrames &framesCoeffi
 {
   QVector<double> x,y ;
   double currentX =0;
-  for(unsigned long i =0; i< 2; ++i){
+  double yMin = 0;
+  double yMax =0;
+  for(unsigned long i =0; i< framesCoefficients.size(); ++i){
       for(unsigned long j=0; j< framesCoefficients.at(i).size(); ++j){
           x.push_back(currentX++);
-          y.push_back(framesCoefficients.at(i).at(j));
+          double currenty = framesCoefficients.at(i).at(j);
+          if(currenty > yMax) yMax = currenty;
+          if(currenty < yMin) yMin = currenty;
+          y.push_back(currenty);
         }
     }
   ui->plot->addGraph();
   ui->plot->graph(0)->setData(x,y);
   ui->plot->xAxis->setRange(0, currentX);
+  ui->plot->yAxis->setRange(yMin, yMax);
   ui->plot->replot();
 }

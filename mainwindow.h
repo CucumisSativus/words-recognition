@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QAudioOutput>
+#include <QBuffer>
 #include "audiohandler.h"
 #include "factories/audioinputfactory.h"
 #include "analyser/audioanalyser.h"
@@ -31,6 +32,7 @@ private:
   AudioHandler * handler;
   AudioAnalyser * analyser;
   QAudioOutput * audioOutput;
+  QBuffer * outputBuffer;
   QVector<MfccCoefficientsViewer * > coefficientsWindows;
 };
 

@@ -39,6 +39,8 @@ public:
   QAudioFormat format() const;
   int samplingFrequency() const;
 
+  QByteArray rawSamples() const;
+
 private:
   QAudioInput * m_audioInput;
   QIODevice * m_recordingDevice;

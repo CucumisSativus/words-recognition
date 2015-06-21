@@ -82,7 +82,7 @@ TransformedVectors AudioAnalyser::calculateMagnitudeSpectrum(const DataVectors &
       fftw_execute(plan);
       fftw_destroy_plan(plan);
 
-      for(unsigned long i=0; i< dataSize; ++i){
+      for(unsigned long i=0; i< dataSize/2; ++i){
           double realPart = transformedFrame[i][0];
           double imagPart = transformedFrame[i][1];
           transformedFrameVector.push_back( std::sqrt(realPart * realPart + imagPart + imagPart  ) );

@@ -34,6 +34,11 @@ int AudioHandler::samplingFrequency() const
 {
   return m_samplingFrequency;
 }
+QByteArray AudioHandler::rawSamples() const
+{
+  return m_rawSamples;
+}
+
 
 
 
