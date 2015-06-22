@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     analyser/audioanalyser.cpp \
     analyser/frequencydomainfilter.cpp \
     mfcccoefficientsviewer.cpp \
-    qcustom-plot/qcustomplot.cpp
+    qcustom-plot/qcustomplot.cpp \
+    spectrumviewer.cpp
 
 HEADERS  += mainwindow.h \
     audiohandler.h \
@@ -32,7 +33,9 @@ HEADERS  += mainwindow.h \
     defines.h \
     analyser/frequencydomainfilter.h \
     mfcccoefficientsviewer.h \
-    qcustom-plot/qcustomplot.h
+    qcustom-plot/qcustomplot.h \
+    spectrumviewer.h
 
 FORMS    += mainwindow.ui \
-    mfcccoefficientsviewer.ui
+    mfcccoefficientsviewer.ui \
+    spectrumviewer.ui

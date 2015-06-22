@@ -13,10 +13,10 @@ QAudioInput *AudioInputFactory::createAudioInput(QObject *parent)
   // Set up the desired format, for example:
   format.setSampleRate(44100);
   format.setChannelCount(1);
-  format.setSampleSize(8);
+  format.setSampleSize(16);
   format.setCodec("audio/pcm");
   format.setByteOrder(QAudioFormat::LittleEndian);
-  format.setSampleType(QAudioFormat::UnSignedInt);
+  format.setSampleType(QAudioFormat::SignedInt);
 
   QAudioDeviceInfo info = QAudioDeviceInfo::defaultInputDevice();
   if (!info.isFormatSupported(format)) {

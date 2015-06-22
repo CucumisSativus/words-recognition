@@ -59,6 +59,9 @@ void MainWindow::performAnalysis()
   qDebug() << "coefficient calculation finished";
   coefficientsWindows.push_back(new MfccCoefficientsViewer(coefficients));
   coefficientsWindows.last()->show();
+
+  spectrumWindows.push_back(new SpectrumViewer(analyser->transformedFrames()));
+  spectrumWindows.last()->show();
 }
 
 void MainWindow::playRecorded()

@@ -51,6 +51,7 @@ void AudioHandler::appendAudioRead(const QByteArray &arr)
 void AudioHandler::prepareSamples(const QByteArray &rawSamples, const QAudioFormat &format)
 {
   QAudioBuffer buffer(rawSamples, format);
+  qDebug() << "Buffer duration" << buffer.duration()/1000000.0;
   double *data = buffer.data<DataType>();
   for(int i =0; i< buffer.sampleCount(); ++i){
     m_samples.push_back(data[i]);

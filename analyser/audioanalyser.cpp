@@ -54,7 +54,7 @@ DataVector AudioAnalyser::applyHammingWindow(const DataVector &frame)
     double alpha = 0.54;
     double beta = 1 - alpha;
     for(unsigned long i=0; i<frame.size(); ++i){
-        DataType value = alpha - beta * std::cos((2 * M_PI * i)/(FRAME_SIZE -1));
+        DataType value = alpha - beta * std::cos((2 * M_PI * frame.at(i))/(FRAME_SIZE -1)) * frame.at(i);
         _frame.push_back(value);
       }
     return _frame;
@@ -76,16 +76,18 @@ TransformedVectors AudioAnalyser::calculateMagnitudeSpectrum(const DataVectors &
       double *frameToBeTransformed = (double *) fftw_malloc(sizeof(double) * dataSize);
       fftw_complex *transformedFrame = (fftw_complex *) fftw_malloc(sizeof(fftw_complex) * dataSize);
 
-      std::copy(frame.begin(), frame.begin() + dataSize, frameToBeTransformed);
+      std::copy(frame.begin(), frame.end(), frameToBeTransformed);
 
       fftw_plan plan = fftw_plan_dft_r2c_1d(dataSize, frameToBeTransformed, transformedFrame, FFTW_MEASURE);
       fftw_execute(plan);
-      fftw_destroy_plan(plan);
+//      fftw_destroy_plan(plan);
 
-      for(unsigned long i=0; i< dataSize/2; ++i){
+      for(unsigned long i=0; i< dataSize; ++i){
           double realPart = transformedFrame[i][0];
           double imagPart = transformedFrame[i][1];
-          transformedFrameVector.push_back( std::sqrt(realPart * realPart + imagPart + imagPart  ) );
+
+          double magnitude = hypot(realPart, imagPart);
+          transformedFrameVector.push_back( magnitude );
         }
 
       transformedFrames.push_back(transformedFrameVector);

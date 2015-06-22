@@ -8,6 +8,7 @@
 #include "factories/audioinputfactory.h"
 #include "analyser/audioanalyser.h"
 #include "mfcccoefficientsviewer.h"
+#include "spectrumviewer.h"
 
 namespace Ui {
   class MainWindow;
@@ -34,6 +35,7 @@ private:
   QAudioOutput * audioOutput;
   QBuffer * outputBuffer;
   QVector<MfccCoefficientsViewer * > coefficientsWindows;
+  QVector<SpectrumViewer * > spectrumWindows;
 };
 
 #endif // MAINWINDOW_H
