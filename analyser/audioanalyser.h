@@ -4,12 +4,13 @@
 #include <vector>
 #include <cmath>
 #include <fftw3.h>
+#include <iostream>
 #include "../defines.h"
 #include "frequencydomainfilter.h"
 class AudioAnalyser
 {
 public:
-  const unsigned int FRAME_SIZE = 4410;
+  const unsigned int FRAME_SIZE = 4096;
   ///
   /// \brief AudioAnalyser class responsible for anlysing audio samples
   /// \param samples vector of ready to use audio samples

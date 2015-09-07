@@ -2,6 +2,7 @@
 #define FREQUENCYDOMAINFILTER_H
 
 #include <cmath>
+#include <stdexcept>
 #include "../defines.h"
 
 class FrequencyDomainFilter
@@ -19,6 +20,8 @@ private:
   int m_distanceBetweenFilters;
 
   TransformedVector m_transformedFrame;
+  TransformedVector m_logSpectrum;
+
   double calculateMi(double m);
   double calculateC(int k);
   double calculateL(int k);

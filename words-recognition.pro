@@ -13,28 +13,30 @@ TEMPLATE = app
 
 QMAKE_CXXFLAGS += -std=c++11 -Werror
 LIBS += -L/usr/local/lib -lfftw3 -lm
-
+CONFIG += c++11
 INCLUDEPATH += /usr/local/include
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    audiohandler.cpp \
+    handlers/audiohandler.cpp \
     factories/audioinputfactory.cpp \
     analyser/audioanalyser.cpp \
     analyser/frequencydomainfilter.cpp \
     mfcccoefficientsviewer.cpp \
     qcustom-plot/qcustomplot.cpp \
-    spectrumviewer.cpp
+    spectrumviewer.cpp \
+    handlers/filehandler.cpp
 
 HEADERS  += mainwindow.h \
-    audiohandler.h \
+    handlers/audiohandler.h \
     factories/audioinputfactory.h \
     analyser/audioanalyser.h \
     defines.h \
     analyser/frequencydomainfilter.h \
     mfcccoefficientsviewer.h \
     qcustom-plot/qcustomplot.h \
-    spectrumviewer.h
+    spectrumviewer.h \
+    handlers/filehandler.h
 
 FORMS    += mainwindow.ui \
     mfcccoefficientsviewer.ui \

@@ -8,14 +8,16 @@ FrequencyDomainFilter::FrequencyDomainFilter(const TransformedVector &transforme
 FilteredFrame FrequencyDomainFilter::filter()
 {
   FilteredFrame filteredFrame;
-  for(unsigned long n =0; n< obtainF(); ++n){
+  for(unsigned long n =1; n<= obtainF(); ++n){
       double filterSum =0;
-      for(unsigned long k =0; k < m_filterOrder - 1; ++k){
+      for(unsigned long k =1; k < m_filterOrder; ++k){
           double sK = amplitudeInMells(k);
           if(sK == 0){
-              continue;
+              throw std::runtime_error("sK is 0!");
             }
+//TODO: Wykres tego
           double lnSK = std::log(sK);
+          m_logSpectrum.push_back(lnSK);
           double cosNumerator = (2.0 * M_PI * (2 * k +1) * n);
           double cosDenominator = 4.0 * m_filterOrder;
           double cosTrans = std::cos(cosNumerator/ cosDenominator);
@@ -73,7 +75,7 @@ double FrequencyDomainFilter::orderFilterBank(int order, int sample)
     if(sample >= l && sample <= c){
         return (sample - l)/(c - l);
       }
-    else if (sample >= c && sample <= r) {
+    else if (sample > c && sample <= r) {
         return (r - sample) / (r - c);
       }
     else{

@@ -53,22 +53,57 @@ void MfccCoefficientsViewer::insertCoefficients(unsigned long frameNum, const Fi
 
 void MfccCoefficientsViewer::insertDataToPlot(const FilteredFrames &framesCoefficients)
 {
-  QVector<double> x,y ;
-  double currentX =0;
+  QVector<double> x;
+  for(unsigned long i =0; i< framesCoefficients.size(); ++i){
+      x.push_back(i);
+    }
   double yMin = 0;
   double yMax =0;
-  for(unsigned long i =0; i< framesCoefficients.size(); ++i){
-      for(unsigned long j=0; j< framesCoefficients.at(i).size(); ++j){
-          x.push_back(currentX++);
-          double currenty = framesCoefficients.at(i).at(j);
+  unsigned long coefficientsNum = framesCoefficients.at(0).size();
+  QVector< QVector<double> > coefficientsByFrame(coefficientsNum);
+
+  ui->plot->setLocale(QLocale(QLocale::English, QLocale::UnitedKingdom)); // period as decimal separator and comma as thousand separator
+  ui->plot->legend->setVisible(true);
+  QFont legendFont = font();  // start out with MainWindow's font..
+  legendFont.setPointSize(9); // and make a bit smaller for legend
+  ui->plot->legend->setFont(legendFont);
+  ui->plot->legend->setBrush(QBrush(QColor(255,255,255,230)));
+  QVector<QCPScatterStyle> lineStyles;
+  lineStyles.push_back(QCPScatterStyle(QCPScatterStyle::ssDot, 4) );
+  lineStyles.push_back(QCPScatterStyle(QCPScatterStyle::ssCross, 4) );
+  lineStyles.push_back(QCPScatterStyle(QCPScatterStyle::ssPlus, 4) );
+  lineStyles.push_back(QCPScatterStyle(QCPScatterStyle::ssCircle, 4) );
+  lineStyles.push_back(QCPScatterStyle(QCPScatterStyle::ssDisc, 4) );
+  lineStyles.push_back(QCPScatterStyle(QCPScatterStyle::ssSquare, 4) );
+  lineStyles.push_back(QCPScatterStyle(QCPScatterStyle::ssDiamond, 4) );
+  lineStyles.push_back(QCPScatterStyle(QCPScatterStyle::ssStar, 4) );
+  lineStyles.push_back(QCPScatterStyle(QCPScatterStyle::ssTriangle, 4) );
+  lineStyles.push_back(QCPScatterStyle(QCPScatterStyle::ssTriangleInverted, 4) );
+  lineStyles.push_back(QCPScatterStyle(QCPScatterStyle::ssCrossSquare, 4) );
+  lineStyles.push_back(QCPScatterStyle(QCPScatterStyle::ssPlusSquare, 4) );
+  lineStyles.push_back(QCPScatterStyle(QCPScatterStyle::ssCrossCircle, 4) );
+  lineStyles.push_back(QCPScatterStyle(QCPScatterStyle::ssPlusCircle, 4) );
+  lineStyles.push_back(QCPScatterStyle(QCPScatterStyle::ssPeace, 4));
+
+
+  for(unsigned long i =0; i< coefficientsNum; ++i){
+      for(unsigned long j=0; j< framesCoefficients.size(); ++j){
+          double currenty = framesCoefficients.at(j).at(i);
           if(currenty > yMax) yMax = currenty;
           if(currenty < yMin) yMin = currenty;
-          y.push_back(currenty);
+          coefficientsByFrame[i].push_back(currenty);
         }
     }
-  ui->plot->addGraph();
-  ui->plot->graph(0)->setData(x,y);
-  ui->plot->xAxis->setRange(0, currentX);
+  for(int coefficientIndex =0; coefficientIndex < coefficientsByFrame.size(); ++coefficientIndex){
+    ui->plot->addGraph();
+    ui->plot->graph(coefficientIndex)->setData(x,coefficientsByFrame.at(coefficientIndex));
+    ui->plot->graph(coefficientIndex)->setLineStyle(QCPGraph::lsNone);
+    ui->plot->graph(coefficientIndex)->setScatterStyle(lineStyles.at(coefficientIndex % lineStyles.size()));
+    ui->plot->graph(coefficientIndex)->setName(QString::number(coefficientIndex));
+//    ui->plot->graph()->setBrush(QBrush(QColor(255,160,50,150)));
+   }
+
+  ui->plot->xAxis->setRange(0, x.size());
   ui->plot->yAxis->setRange(yMin, yMax);
   ui->plot->replot();
 }

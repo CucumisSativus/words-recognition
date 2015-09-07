@@ -9,14 +9,8 @@ QAudioInput *AudioInputFactory::createAudioInput(const QAudioFormat &format, QOb
 
 QAudioInput *AudioInputFactory::createAudioInput(QObject *parent)
 {
-  QAudioFormat format;
-  // Set up the desired format, for example:
-  format.setSampleRate(44100);
-  format.setChannelCount(1);
-  format.setSampleSize(16);
-  format.setCodec("audio/pcm");
-  format.setByteOrder(QAudioFormat::LittleEndian);
-  format.setSampleType(QAudioFormat::SignedInt);
+
+  QAudioFormat format = createFormat();
 
   QAudioDeviceInfo info = QAudioDeviceInfo::defaultInputDevice();
   if (!info.isFormatSupported(format)) {
@@ -24,6 +18,22 @@ QAudioInput *AudioInputFactory::createAudioInput(QObject *parent)
       format = info.nearestFormat(format);
   }
   return createAudioInput(format, parent);
+}
+
+QAudioFormat AudioInputFactory::createFormat()
+{
+  QAudioFormat format;
+  // Set up the desired format, for example:
+  format.setSampleRate(44100);
+  format.setChannelCount(1);
+  format.setSampleSize(32);
+  format.setCodec("audio/pcm");
+  format.setByteOrder(QAudioFormat::LittleEndian);
+  format.setSampleType(QAudioFormat::Float);
+  if(!format.isValid()){
+      throw 1;
+    }
+  return format;
 }
 
 AudioInputFactory::AudioInputFactory()

@@ -22,6 +22,9 @@
     </widget>
    </item>
    <item>
+    <widget class="QLineEdit" name="lineEdit"/>
+   </item>
+   <item>
     <widget class="QCustomPlot" name="plot" native="true">
      <property name="minimumSize">
       <size>

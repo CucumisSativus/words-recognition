@@ -13,6 +13,8 @@ MainWindow::MainWindow(QWidget *parent) :
   connect(ui->buttonStop, SIGNAL(pressed()), this, SLOT(stopRecording()));
   connect(ui->buttonAnalyse, SIGNAL(pressed()), this, SLOT(performAnalysis()));
   connect(ui->buttonPlay, SIGNAL(pressed()), this, SLOT(playRecorded()));
+  connect(ui->buttonLoad, SIGNAL(pressed()), this, SLOT(analyseFile()));
+
   ui->buttonStop->setEnabled(false);
   ui->buttonAnalyse->setEnabled(false);
   ui->buttonPlay->setEnabled(false);
@@ -31,6 +33,10 @@ MainWindow::~MainWindow()
 
 void MainWindow::startRecording()
 {
+  if(handler){
+      delete handler;
+    }
+  handler = new AudioHandler(AudioInputFactory::createAudioInput(this), this);
   handler->startRecording();
   ui->buttonStop->setEnabled(true);
   ui->buttonStart->setEnabled(false);
@@ -81,6 +87,23 @@ void MainWindow::playRecorded()
   ui->buttonPlay->setEnabled(false);
 }
 
+void MainWindow::analyseFile()
+{
+  QAudioDecoder *decoder = new QAudioDecoder(this);
+  decoder->setAudioFormat(AudioInputFactory::createFormat());
+  decoder->setSourceFilename("~/uczelnia/sound-processing/words-recognition/samples/raz.wav");
+  FileHandler f_handler(decoder);
+  f_handler.prepareSamples();
+  DataVector stdSampled = f_handler.samples().toStdVector();
+  analyser = new AudioAnalyser(stdSampled);
+  FilteredFrames coefficients = analyser->mfccCoefficents(30, 100);
+  coefficientsWindows.push_back(new MfccCoefficientsViewer(coefficients));
+  coefficientsWindows.last()->show();
+
+  spectrumWindows.push_back(new SpectrumViewer(analyser->transformedFrames()));
+  spectrumWindows.last()->show();
+}
+
 void MainWindow::audioOutputStateCHanged(QAudio::State newState)
 {
   switch (newState) {
@@ -106,5 +129,10 @@ void MainWindow::audioOutputStateCHanged(QAudio::State newState)
           default:
               // ... other cases as appropriate
               break;
-      }
+    }
+}
+
+void MainWindow::fileSamplesReady()
+{
+
 }

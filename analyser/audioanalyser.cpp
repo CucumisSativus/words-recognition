@@ -2,7 +2,6 @@
 
 
 
-
 AudioAnalyser::AudioAnalyser(const DataVector &samples, int samplingFrequency) : m_samplingFrequency(samplingFrequency)
 {
   divideSamples(samples);
@@ -25,7 +24,7 @@ int AudioAnalyser::samplingFrequency() const
 FilteredFrames AudioAnalyser::mfccCoefficents(unsigned long filterOrder, int distanceBetweenFilters) const
 {
   FilteredFrames frames;
-  for(unsigned long i=0; i< m_transformedFrames.size(); ++i){
+  for(unsigned long i=1; i< m_transformedFrames.size(); ++i){
 //  for(unsigned long i=0; i< 2; ++i){
     FrequencyDomainFilter filter(m_transformedFrames.at(i), filterOrder, m_samplingFrequency, distanceBetweenFilters);
     frames.push_back(filter.filter());
@@ -76,21 +75,30 @@ TransformedVectors AudioAnalyser::calculateMagnitudeSpectrum(const DataVectors &
       double *frameToBeTransformed = (double *) fftw_malloc(sizeof(double) * dataSize);
       fftw_complex *transformedFrame = (fftw_complex *) fftw_malloc(sizeof(fftw_complex) * dataSize);
 
-      std::copy(frame.begin(), frame.end(), frameToBeTransformed);
+//      std::copy(frame.begin(), frame.end(), frameToBeTransformed);
 
+      for(unsigned int i =0; i < frame.size(); ++i){
+          frameToBeTransformed[i] = frame.at(i);
+        }
       fftw_plan plan = fftw_plan_dft_r2c_1d(dataSize, frameToBeTransformed, transformedFrame, FFTW_MEASURE);
       fftw_execute(plan);
-//      fftw_destroy_plan(plan);
 
-      for(unsigned long i=0; i< dataSize; ++i){
+      for(unsigned long i=0; i< dataSize/2; ++i){
           double realPart = transformedFrame[i][0];
           double imagPart = transformedFrame[i][1];
 
-          double magnitude = hypot(realPart, imagPart);
+          if(std::isnan(realPart) || std::isnan(imagPart)){
+              std::cout << "we have a nan over here!" << std::endl;
+            }
+          if(std::isinf(realPart) || std::isinf(imagPart)){
+              std::cout << "we have an infinity over here!" << std::endl;
+            }
+          double magnitude = hypot(realPart, imagPart) / (dataSize/2);
           transformedFrameVector.push_back( magnitude );
         }
 
       transformedFrames.push_back(transformedFrameVector);
+      fftw_destroy_plan(plan);
       fftw_free(frameToBeTransformed);
       fftw_free(transformedFrame);
     }
