@@ -42,7 +42,8 @@ HEADERS  += mainwindow.h \
     samples_db/singleton/call_once.h \
     samples_db/singleton/singleton.h \
     samples_db/samplesdb.h \
-    dtw/dtwmatrix.h
+    dtw/dtwmatrix.h \
+    dtw/genericgrid.h
 
 FORMS    += mainwindow.ui \
     mfcccoefficientsviewer.ui \
