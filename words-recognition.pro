@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     qcustom-plot/qcustomplot.cpp \
     spectrumviewer.cpp \
     handlers/filehandler.cpp \
-    samples_db/samplesdb.cpp
+    samples_db/samplesdb.cpp \
+    dtw/dtwmatrix.cpp
 
 HEADERS  += mainwindow.h \
     handlers/audiohandler.h \
@@ -40,7 +41,8 @@ HEADERS  += mainwindow.h \
     handlers/filehandler.h \
     samples_db/singleton/call_once.h \
     samples_db/singleton/singleton.h \
-    samples_db/samplesdb.h
+    samples_db/samplesdb.h \
+    dtw/dtwmatrix.h
 
 FORMS    += mainwindow.ui \
     mfcccoefficientsviewer.ui \

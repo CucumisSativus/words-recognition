@@ -16,10 +16,14 @@ void FileHandler::prepareSamples()
 
 void FileHandler::readBuffer()
 {
+
   QAudioBuffer buffer = m_decoder->read();
-  double *data = buffer.data<DataType>();
-  for(int i=0; i< buffer.sampleCount(); ++i){
-      m_samples.push_back(data[i]);
+  const QAudioBuffer::S32F *data = buffer.constData<QAudioBuffer::S32F>();
+  for(int i =0; i< buffer.sampleCount(); ++i){
+    const float sample = data[i].average();
+    if(sample != 0.0){
+        m_samples.push_back(sample);
+      }
     }
   emit samplesReady();
 }

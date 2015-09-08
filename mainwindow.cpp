@@ -62,6 +62,7 @@ void MainWindow::performAnalysis()
   analyser = new AudioAnalyser(stdSampled);
   qDebug() << "coefficient calculation started";
   FilteredFrames coefficients = analyser->mfccCoefficents(30, 100);
+  SampleDbInstance.appendResults(QDateTime::currentDateTime().toString(), coefficients);
   qDebug() << "coefficient calculation finished";
   coefficientsWindows.push_back(new MfccCoefficientsViewer(coefficients));
   coefficientsWindows.last()->show();
@@ -91,17 +92,12 @@ void MainWindow::analyseFile()
 {
   QAudioDecoder *decoder = new QAudioDecoder(this);
   decoder->setAudioFormat(AudioInputFactory::createFormat());
-  decoder->setSourceFilename("~/uczelnia/sound-processing/words-recognition/samples/raz.wav");
-  FileHandler f_handler(decoder);
-  f_handler.prepareSamples();
-  DataVector stdSampled = f_handler.samples().toStdVector();
-  analyser = new AudioAnalyser(stdSampled);
-  FilteredFrames coefficients = analyser->mfccCoefficents(30, 100);
-  coefficientsWindows.push_back(new MfccCoefficientsViewer(coefficients));
-  coefficientsWindows.last()->show();
-
-  spectrumWindows.push_back(new SpectrumViewer(analyser->transformedFrames()));
-  spectrumWindows.last()->show();
+  decoder->setSourceFilename("/Users/michal/uczelnia/sound-processing/words-recognition/samples/raz.wav");
+  qDebug() << "Audio file duration" << decoder->duration();
+  qDebug() << decoder->error();
+  f_handler = new FileHandler(decoder);
+  connect(f_handler, SIGNAL(samplesReady()), this, SLOT(fileSamplesReady()));
+  f_handler->prepareSamples();
 }
 
 void MainWindow::audioOutputStateCHanged(QAudio::State newState)
@@ -134,5 +130,12 @@ void MainWindow::audioOutputStateCHanged(QAudio::State newState)
 
 void MainWindow::fileSamplesReady()
 {
+  DataVector stdSampled = f_handler->samples().toStdVector();
+  analyser = new AudioAnalyser(stdSampled);
+  FilteredFrames coefficients = analyser->mfccCoefficents(30, 100);
+  coefficientsWindows.push_back(new MfccCoefficientsViewer(coefficients));
+  coefficientsWindows.last()->show();
 
+  spectrumWindows.push_back(new SpectrumViewer(analyser->transformedFrames()));
+  spectrumWindows.last()->show();
 }

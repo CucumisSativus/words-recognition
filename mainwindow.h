@@ -12,7 +12,7 @@
 #include "analyser/audioanalyser.h"
 #include "mfcccoefficientsviewer.h"
 #include "spectrumviewer.h"
-
+#include "samples_db/samplesdb.h"
 namespace Ui {
   class MainWindow;
 }
@@ -38,6 +38,7 @@ private:
   Ui::MainWindow *ui;
   AudioHandler * handler;
   AudioAnalyser * analyser;
+  FileHandler * f_handler;
   QAudioOutput * audioOutput;
   QBuffer * outputBuffer;
   QVector<MfccCoefficientsViewer * > coefficientsWindows;
