@@ -39,7 +39,9 @@ void AudioAnalyser::divideSamples(const DataVector & samples)
   DataVector frame;
   for(DataVector::const_iterator it = samples.begin(); it != samples.end(); ++it)
     {
-      frame.push_back(*it);
+      if(!std::isnan(*it)){
+        frame.push_back(*it);
+        }
       if(frame.size() >= FRAME_SIZE){
           m_dividedSamples.push_back(applyHammingWindow(frame));
           frame.clear();
@@ -67,6 +69,7 @@ void AudioAnalyser::transformFrames(const DataVectors &frames)
 TransformedVectors AudioAnalyser::calculateMagnitudeSpectrum(const DataVectors &frames)
 {
   TransformedVectors transformedFrames;
+  //TODO: wykresy po DFT, w skali melowej, po cosinusach
   for(unsigned long frameIndex =0; frameIndex < frames.size(); ++frameIndex){
       TransformedVector transformedFrameVector;
       DataVector frame = frames.at(frameIndex);
@@ -76,19 +79,32 @@ TransformedVectors AudioAnalyser::calculateMagnitudeSpectrum(const DataVectors &
       fftw_complex *transformedFrame = (fftw_complex *) fftw_malloc(sizeof(fftw_complex) * dataSize);
 
 //      std::copy(frame.begin(), frame.end(), frameToBeTransformed);
-
+      unsigned nanCounter = 0;
       for(unsigned int i =0; i < frame.size(); ++i){
+          double sample = frame.at(i);
+          if(std::isnan(sample) ){
+              std::cout << "we have a nan over here!" << std::endl;
+              nanCounter++;
+            }
+          if(std::isinf(sample)){
+              std::cout << "we have an infinity over here!" << std::endl;
+            }
           frameToBeTransformed[i] = frame.at(i);
+        }
+      if(nanCounter != 0){
+          std::cout << "nan ratio:" << (double)nanCounter/frame.size();
         }
       fftw_plan plan = fftw_plan_dft_r2c_1d(dataSize, frameToBeTransformed, transformedFrame, FFTW_MEASURE);
       fftw_execute(plan);
 
+      nanCounter =0;
       for(unsigned long i=0; i< dataSize/2; ++i){
           double realPart = transformedFrame[i][0];
           double imagPart = transformedFrame[i][1];
 
           if(std::isnan(realPart) || std::isnan(imagPart)){
               std::cout << "we have a nan over here!" << std::endl;
+              nanCounter++;
             }
           if(std::isinf(realPart) || std::isinf(imagPart)){
               std::cout << "we have an infinity over here!" << std::endl;
@@ -97,6 +113,9 @@ TransformedVectors AudioAnalyser::calculateMagnitudeSpectrum(const DataVectors &
           transformedFrameVector.push_back( magnitude );
         }
 
+      if(nanCounter != 0){
+          std::cout << "nan ratio after transformation:" << (double)nanCounter/frame.size();
+        }
       transformedFrames.push_back(transformedFrameVector);
       fftw_destroy_plan(plan);
       fftw_free(frameToBeTransformed);

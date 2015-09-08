@@ -54,7 +54,7 @@ void AudioHandler::prepareSamples(const QByteArray &rawSamples, const QAudioForm
   qDebug() << "Buffer duration" << buffer.duration()/1000000.0;
   const QAudioBuffer::S32F *data = buffer.constData<QAudioBuffer::S32F>();
   for(int i =0; i< buffer.sampleCount(); ++i){
-    float sample = data[i].average();
+    const float sample = data[i].average();
     if(sample != 0.0){
         m_samples.push_back(sample);
       }

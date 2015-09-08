@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QDateTime>
+#include <cmath>
 #include "defines.h"
 namespace Ui {
   class MfccCoefficientsViewer;

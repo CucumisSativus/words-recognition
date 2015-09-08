@@ -10,7 +10,7 @@
 class AudioAnalyser
 {
 public:
-  const unsigned int FRAME_SIZE = 4096;
+  const unsigned int FRAME_SIZE = 1024;
   ///
   /// \brief AudioAnalyser class responsible for anlysing audio samples
   /// \param samples vector of ready to use audio samples

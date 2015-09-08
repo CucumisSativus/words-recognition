@@ -94,13 +94,15 @@ void MfccCoefficientsViewer::insertDataToPlot(const FilteredFrames &framesCoeffi
           coefficientsByFrame[i].push_back(currenty);
         }
     }
+  QPen pen;
   for(int coefficientIndex =0; coefficientIndex < coefficientsByFrame.size(); ++coefficientIndex){
+    pen.setColor(QColor(qSin(coefficientIndex*0.3)*100+100, qSin(coefficientIndex*0.6+0.7)*100+100, qSin(coefficientIndex*0.4+0.6)*100+100));
     ui->plot->addGraph();
     ui->plot->graph(coefficientIndex)->setData(x,coefficientsByFrame.at(coefficientIndex));
+    ui->plot->graph(coefficientIndex)->setPen(pen);
     ui->plot->graph(coefficientIndex)->setLineStyle(QCPGraph::lsNone);
     ui->plot->graph(coefficientIndex)->setScatterStyle(lineStyles.at(coefficientIndex % lineStyles.size()));
     ui->plot->graph(coefficientIndex)->setName(QString::number(coefficientIndex));
-//    ui->plot->graph()->setBrush(QBrush(QColor(255,160,50,150)));
    }
 
   ui->plot->xAxis->setRange(0, x.size());
