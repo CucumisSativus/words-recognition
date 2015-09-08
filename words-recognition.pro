@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     mfcccoefficientsviewer.cpp \
     qcustom-plot/qcustomplot.cpp \
     spectrumviewer.cpp \
-    handlers/filehandler.cpp
+    handlers/filehandler.cpp \
+    samples_db/samplesdb.cpp
 
 HEADERS  += mainwindow.h \
     handlers/audiohandler.h \
@@ -36,7 +37,10 @@ HEADERS  += mainwindow.h \
     mfcccoefficientsviewer.h \
     qcustom-plot/qcustomplot.h \
     spectrumviewer.h \
-    handlers/filehandler.h
+    handlers/filehandler.h \
+    samples_db/singleton/call_once.h \
+    samples_db/singleton/singleton.h \
+    samples_db/samplesdb.h
 
 FORMS    += mainwindow.ui \
     mfcccoefficientsviewer.ui \
