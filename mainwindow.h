@@ -5,6 +5,7 @@
 #include <QAudioOutput>
 #include <QBuffer>
 #include <QAudioDecoder>
+#include <QMessageBox>
 
 #include "handlers/audiohandler.h"
 #include "handlers/filehandler.h"
@@ -30,6 +31,7 @@ private slots:
   void performAnalysis();
   void playRecorded();
   void analyseFile();
+  void compareSamples();
 
   void audioOutputStateCHanged(QAudio::State newState);
   void fileSamplesReady();

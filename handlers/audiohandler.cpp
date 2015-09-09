@@ -53,7 +53,9 @@ void AudioHandler::prepareSamples(const QByteArray &rawSamples, const QAudioForm
   QAudioBuffer buffer(rawSamples, format);
   qDebug() << "Buffer duration" << buffer.duration()/1000000.0;
   const QAudioBuffer::S32F *data = buffer.constData<QAudioBuffer::S32F>();
-  for(int i =0; i< buffer.sampleCount(); ++i){
+  qDebug() << "frameCount" << buffer.frameCount() << " samplesCount" << buffer.sampleCount();
+  for(int i =0; i< buffer.frameCount(); ++i){
+    //TODO: ogarnąć czemu to się wywala i co z ym zrobić
     const float sample = data[i].left;
     if(sample != 0.0){
         m_samples.push_back(sample);

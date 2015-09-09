@@ -14,10 +14,12 @@ MainWindow::MainWindow(QWidget *parent) :
   connect(ui->buttonAnalyse, SIGNAL(pressed()), this, SLOT(performAnalysis()));
   connect(ui->buttonPlay, SIGNAL(pressed()), this, SLOT(playRecorded()));
   connect(ui->buttonLoad, SIGNAL(pressed()), this, SLOT(analyseFile()));
+  connect(ui->buttonCompare, SIGNAL(pressed()), this, SLOT(compareSamples()));
 
   ui->buttonStop->setEnabled(false);
   ui->buttonAnalyse->setEnabled(false);
   ui->buttonPlay->setEnabled(false);
+  ui->buttonCompare->setEnabled(false);
 }
 
 MainWindow::~MainWindow()
@@ -51,6 +53,9 @@ void MainWindow::stopRecording()
   ui->buttonStart->setEnabled(true);
   ui->buttonAnalyse->setEnabled(true);
   ui->buttonPlay->setEnabled(true);
+  if(SampleDbInstance.resultsCount() >= 2){
+      ui->buttonCompare->setEnabled(true);
+    }
 }
 
 void MainWindow::performAnalysis()
@@ -98,6 +103,14 @@ void MainWindow::analyseFile()
   f_handler = new FileHandler(decoder);
   connect(f_handler, SIGNAL(samplesReady()), this, SLOT(fileSamplesReady()));
   f_handler->prepareSamples();
+}
+
+void MainWindow::compareSamples()
+{
+  QMessageBox msgBox;
+  QString closestSampleName = SampleDbInstance.compareLastSample();
+  msgBox.setText(closestSampleName);
+  msgBox.exec();
 }
 
 void MainWindow::audioOutputStateCHanged(QAudio::State newState)
