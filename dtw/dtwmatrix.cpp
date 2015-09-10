@@ -73,6 +73,30 @@ double DtwMatrix::cost(double bandCoefficient)
   return cost/(path.numColumns() + path.numRows());
 }
 
+void DtwMatrix::printCosts()
+{
+  std::cout << "==============Costs=============" << std::endl;
+  std::cout.setf(std::ios::fixed,std::ios::floatfield);
+  std::cout.precision(2);
+  for(size_t i =0; i< matrix.numRows(); ++i){
+      for(size_t j=0; j< matrix.numColumns(); ++j){
+          std::cout << matrix.get(i,j) << "\t";
+        }
+      std::cout << "\n";
+    }
+}
+
+void DtwMatrix::printPath()
+{
+  std::cout << "==============path=============" << std::endl;
+  for(size_t i =0; i< path.numRows(); ++i){
+      for(size_t j=0; j< path.numColumns(); ++j){
+          std::cout << path.get(i,j) << "\t";
+        }
+      std::cout << "\n";
+    }
+}
+
 double DtwMatrix::dist(const FilteredFrame &mfcc1, const FilteredFrame &mfcc2)
 {
   double sum =0.0;

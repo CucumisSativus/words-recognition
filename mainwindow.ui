@@ -16,30 +16,30 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
+     <widget class="QPushButton" name="buttonLoad">
+      <property name="text">
+       <string>Load Files</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QPushButton" name="buttonStart">
       <property name="text">
-       <string>Start</string>
+       <string>Start recording</string>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QPushButton" name="buttonStop">
       <property name="text">
-       <string>Stop</string>
+       <string>Stop recording</string>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QPushButton" name="buttonPlay">
       <property name="text">
-       <string>Play</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="buttonLoad">
-      <property name="text">
-       <string>Analyse File</string>
+       <string>Play recorded</string>
       </property>
      </widget>
     </item>
@@ -52,6 +52,9 @@
     </item>
     <item>
      <widget class="QPushButton" name="buttonCompare">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="text">
        <string>Find closes sample</string>
       </property>

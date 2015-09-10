@@ -16,6 +16,7 @@ class MfccCoefficientsViewer : public QWidget
 public:
   explicit MfccCoefficientsViewer(const FilteredFrames &framesCoefficients, QWidget *parent = 0);
   ~MfccCoefficientsViewer();
+  void setTile(const QString & title);
 
 private:
   Ui::MfccCoefficientsViewer *ui;

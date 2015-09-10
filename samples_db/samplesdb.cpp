@@ -10,21 +10,17 @@ void SamplesDb::appendResults(const QString &name, const FilteredFrames &results
   this->results.push_back(CoefficientsResult(name, results));
 }
 
-QString SamplesDb::closestSample(const QString &name)
+QString SamplesDb::closestSample(const FilteredFrames & recorded)
 {
-  CoefficientsResult queried;
-  for(int i =0; i< results.size(); ++i){
-      if(results[i].first == name){
-          queried = results[i];
-        }
-    }
-  CoefficientsResults resultsExcludingQueried = results;
-  resultsExcludingQueried.removeAll(queried);
   DistancePairs costs;
-  for(int i = 0; i< resultsExcludingQueried.size(); ++i){
-      CoefficientsResult fromDb;
+  CoefficientsResult queried("", recorded);
+  for(int i = 0; i< results.size(); ++i){
+      CoefficientsResult fromDb = results.at(i);
       QString name = fromDb.first;
       DtwMatrix matrix(fromDb, queried);
+      matrix.printCosts();
+      qDebug() << "==============Path==============";
+      matrix.printPath();
       costs.push_back(DistancePair(name, matrix.cost(BAND_COEFFICIENT)));
     }
 
@@ -33,7 +29,7 @@ QString SamplesDb::closestSample(const QString &name)
 
 QString SamplesDb::compareLastSample()
 {
-  return closestSample(results.last().first);
+  return closestSample(results.last().second);
 }
 
 unsigned long SamplesDb::resultsCount()
@@ -47,7 +43,8 @@ QString SamplesDb::closestDistanceSampleName(const DistancePairs &pairs)
   QString closestDistanceSampleName = pairs[0].first;
   for(int i =0; i<pairs.size(); ++i){
       double distance = pairs[i].second;
-      if(distance < minDistance){
+      qDebug() << "Distance to "<< pairs[i].first << " : " << distance;
+      if(distance < minDistance && distance != 0){
           minDistance = distance;
           closestDistanceSampleName = pairs[i].first;
         }

@@ -6,6 +6,9 @@
 #include <QBuffer>
 #include <QAudioDecoder>
 #include <QMessageBox>
+#include <QDir>
+#include <QFileDialog>
+
 
 #include "handlers/audiohandler.h"
 #include "handlers/filehandler.h"
@@ -34,7 +37,7 @@ private slots:
   void compareSamples();
 
   void audioOutputStateCHanged(QAudio::State newState);
-  void fileSamplesReady();
+  void fileSamplesReady(QString filename);
 private:
 
   Ui::MainWindow *ui;
@@ -45,6 +48,7 @@ private:
   QBuffer * outputBuffer;
   QVector<MfccCoefficientsViewer * > coefficientsWindows;
   QVector<SpectrumViewer * > spectrumWindows;
+  void performFileAnalysis(QString filename);
 };
 
 #endif // MAINWINDOW_H

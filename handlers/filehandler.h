@@ -2,29 +2,29 @@
 #define FILEHANDLER_H
 
 #include <QObject>
-#include <QAudioDecoder>
-#include <QAudioFormat>
-#include <QAudioBuffer>
+#include <sndfile.hh>
+#include <stdexcept>
 #include "defines.h"
 
+const int BUFFER_LEN = 1024;
 class FileHandler : public QObject
 {
   Q_OBJECT
 public:
-  explicit FileHandler(QAudioDecoder *decoder, QObject *parent = 0);
+  explicit FileHandler(const QString &filename, QObject *parent = 0);
 
   QVector<DataType> samples() const;
 
 signals:
-  void samplesReady();
+  void samplesReady(QString);
 public slots:
   void prepareSamples();
-private slots:
-  void readBuffer();
 private:
-  QVector<DataType> m_samples;
-  QAudioDecoder * m_decoder;
-  QAudioFormat m_format;
+  std::vector<double> m_samples;
+  SndfileHandle infileHandle;
+  double data[BUFFER_LEN];
+  sf_count_t read(double * data);
+  QString filename;
 };
 
 #endif // FILEHANDLER_H

@@ -53,9 +53,6 @@ void MainWindow::stopRecording()
   ui->buttonStart->setEnabled(true);
   ui->buttonAnalyse->setEnabled(true);
   ui->buttonPlay->setEnabled(true);
-  if(SampleDbInstance.resultsCount() >= 2){
-      ui->buttonCompare->setEnabled(true);
-    }
 }
 
 void MainWindow::performAnalysis()
@@ -67,13 +64,16 @@ void MainWindow::performAnalysis()
   analyser = new AudioAnalyser(stdSampled);
   qDebug() << "coefficient calculation started";
   FilteredFrames coefficients = analyser->mfccCoefficents(30, 100);
-  SampleDbInstance.appendResults(QDateTime::currentDateTime().toString(), coefficients);
   qDebug() << "coefficient calculation finished";
   coefficientsWindows.push_back(new MfccCoefficientsViewer(coefficients));
   coefficientsWindows.last()->show();
+  QMessageBox msgBox;
+  QString closestSampleName = SampleDbInstance.closestSample(coefficients);
+  msgBox.setText(closestSampleName);
+  msgBox.exec();
 
-  spectrumWindows.push_back(new SpectrumViewer(analyser->transformedFrames()));
-  spectrumWindows.last()->show();
+//  spectrumWindows.push_back(new SpectrumViewer(analyser->transformedFrames()));
+//  spectrumWindows.last()->show();
 }
 
 void MainWindow::playRecorded()
@@ -94,21 +94,34 @@ void MainWindow::playRecorded()
 }
 
 void MainWindow::analyseFile()
-{
-  QAudioDecoder *decoder = new QAudioDecoder(this);
-  decoder->setAudioFormat(AudioInputFactory::createFormat());
-  decoder->setSourceFilename("/Users/michal/uczelnia/sound-processing/words-recognition/samples/raz.wav");
-  qDebug() << "Audio file duration" << decoder->duration();
-  qDebug() << decoder->error();
-  f_handler = new FileHandler(decoder);
-  connect(f_handler, SIGNAL(samplesReady()), this, SLOT(fileSamplesReady()));
-  f_handler->prepareSamples();
+  {
+  QDir dir("/Users/michal/uczelnia/sound-processing/words-recognition/samples/");
+  dir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
+  dir.setSorting(QDir::Size | QDir::Reversed);
+
+  QStringList list = dir.entryList();
+  for (int i = 0; i < list.size()/4; ++i) {
+      QString filename = dir.absoluteFilePath(list.at(i));
+      qDebug() << "Anylysing file" << filename;
+      performFileAnalysis(filename);
+  }
+  ui->buttonCompare->setEnabled(true);
+
 }
 
 void MainWindow::compareSamples()
 {
+  QString filename = QFileDialog::getOpenFileName(this,
+      tr("Open audiofile"), "/Users/michal/uczelnia/sound-processing/words-recognition/samples", tr("Wav (*.wav)"));
+  f_handler = new FileHandler(filename);
+  f_handler->prepareSamples();
+  DataVector stdSampled = f_handler->samples().toStdVector();
+  analyser = new AudioAnalyser(stdSampled);
+  FilteredFrames coefficients = analyser->mfccCoefficents(30, 100);
+  coefficientsWindows.push_back(new MfccCoefficientsViewer(coefficients));
+  coefficientsWindows.last()->show();
   QMessageBox msgBox;
-  QString closestSampleName = SampleDbInstance.compareLastSample();
+  QString closestSampleName = SampleDbInstance.closestSample(coefficients);
   msgBox.setText(closestSampleName);
   msgBox.exec();
 }
@@ -141,14 +154,34 @@ void MainWindow::audioOutputStateCHanged(QAudio::State newState)
     }
 }
 
-void MainWindow::fileSamplesReady()
+void MainWindow::fileSamplesReady(QString filename)
 {
   DataVector stdSampled = f_handler->samples().toStdVector();
   analyser = new AudioAnalyser(stdSampled);
   FilteredFrames coefficients = analyser->mfccCoefficents(30, 100);
+  SampleDbInstance.appendResults(filename, coefficients);
   coefficientsWindows.push_back(new MfccCoefficientsViewer(coefficients));
   coefficientsWindows.last()->show();
 
   spectrumWindows.push_back(new SpectrumViewer(analyser->transformedFrames()));
   spectrumWindows.last()->show();
+}
+
+void MainWindow::performFileAnalysis(QString filename)
+{
+    f_handler = new FileHandler(filename);
+    f_handler->prepareSamples();
+    qDebug() << "File prepared";
+    DataVector stdSampled = f_handler->samples().toStdVector();
+    analyser = new AudioAnalyser(stdSampled);
+    qDebug() << "File coefficients calculation started";
+    FilteredFrames coefficients = analyser->mfccCoefficents(30, 100);
+    qDebug() << "File coefficients calculation finished";
+    SampleDbInstance.appendResults(filename, coefficients);
+    coefficientsWindows.push_back(new MfccCoefficientsViewer(coefficients));
+    coefficientsWindows.last()->setTile(filename);
+    coefficientsWindows.last()->show();
+
+  //  spectrumWindows.push_back(new SpectrumViewer(analyser->transformedFrames()));
+  //  spectrumWindows.last()->show();
 }

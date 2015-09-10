@@ -19,6 +19,11 @@ MfccCoefficientsViewer::~MfccCoefficientsViewer()
   delete ui;
 }
 
+void MfccCoefficientsViewer::setTile(const QString &title)
+{
+  ui->dateLabel->setText(title);
+}
+
 void MfccCoefficientsViewer::setupTable()
 {
   ui->coefficientsTable->setColumnCount(3);
@@ -106,6 +111,6 @@ void MfccCoefficientsViewer::insertDataToPlot(const FilteredFrames &framesCoeffi
    }
 
   ui->plot->xAxis->setRange(0, x.size());
-  ui->plot->yAxis->setRange(yMin, yMax);
+  ui->plot->yAxis->setRange(-3, 3);
   ui->plot->replot();
 }

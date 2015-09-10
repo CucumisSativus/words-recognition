@@ -12,7 +12,7 @@ TARGET = words-recognition
 TEMPLATE = app
 
 QMAKE_CXXFLAGS += -std=c++11 -Werror
-LIBS += -L/usr/local/lib -lfftw3 -lm
+LIBS += -L/usr/local/lib -lfftw3 -lm -lsndfile
 CONFIG += c++11
 INCLUDEPATH += /usr/local/include
 

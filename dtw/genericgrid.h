@@ -23,6 +23,9 @@ public:
 
     size_t numColumns() const;
 
+    std::string toString() const;
+
+
 private:
     size_t mNumRows;
     size_t mNumColumns;
@@ -79,7 +82,22 @@ size_t GenericGrid<T>::numRows() const
 template<class T>
 size_t GenericGrid<T>::numColumns() const
 {
-    return mNumColumns;
+  return mNumColumns;
+}
+
+
+template<class T>
+std::string GenericGrid<T>::toString() const
+{
+  std::string result;
+  for(size_t i =0; i< numRows(); ++i){
+      for(size_t j=0; j< numColumns(); ++j){
+          result += get(i,j);
+          result += " ";
+        }
+      result += "\n";
+    }
+  return result;
 }
 
 

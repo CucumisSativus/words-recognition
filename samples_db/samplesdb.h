@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QVector>
 #include <limits>
+#include <QDebug>
 #include "singleton/singleton.h"
 #include "../dtw/dtwmatrix.h"
 #include "../defines.h"
@@ -15,7 +16,7 @@ public:
   explicit SamplesDb(QObject *parent = 0);
 
   void appendResults(const QString & name, const FilteredFrames & results);
-  QString closestSample(const QString & name);
+  QString closestSample(const FilteredFrames &recorded);
   QString compareLastSample();
   unsigned long resultsCount();
 

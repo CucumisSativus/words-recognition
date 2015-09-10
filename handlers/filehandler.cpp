@@ -1,35 +1,32 @@
 #include "filehandler.h"
 
-FileHandler::FileHandler(QAudioDecoder * decoder, QObject *parent) :
-  QObject(parent),
-  m_decoder(decoder),
-  m_format(decoder->audioFormat())
+FileHandler::FileHandler(const QString & filename, QObject *parent) :
+  QObject(parent), filename(filename)
 {
-
+  if (!(infileHandle = SndfileHandle(filename.toStdString(), SFM_READ))) {
+          throw std::runtime_error("Cannot open input file");
+      };
 }
 
 void FileHandler::prepareSamples()
 {
- connect(m_decoder, SIGNAL(bufferReady()), this, SLOT(readBuffer()));
- m_decoder->start();
+  sf_count_t readCount;
+  while((readCount = (read(data))) != 0){
+      std::vector<double> vector(data, data + readCount);
+      m_samples.reserve(m_samples.size() + vector.size());
+      m_samples.insert(m_samples.end(), vector.begin(), vector.end());
+  }
+  emit samplesReady(filename);
 }
 
-void FileHandler::readBuffer()
+sf_count_t FileHandler::read(double *data)
 {
-
-  QAudioBuffer buffer = m_decoder->read();
-  const QAudioBuffer::S32F *data = buffer.constData<QAudioBuffer::S32F>();
-  for(int i =0; i< buffer.sampleCount(); ++i){
-    const float sample = data[i].average();
-    if(sample != 0.0){
-        m_samples.push_back(sample);
-      }
-    }
-  emit samplesReady();
+  return infileHandle.read(data, BUFFER_LEN);
 }
+
 QVector<DataType> FileHandler::samples() const
 {
-  return m_samples;
+  return QVector<DataType>::fromStdVector(m_samples);
 }
 
 
