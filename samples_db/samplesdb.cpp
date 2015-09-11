@@ -2,7 +2,7 @@
 
 SamplesDb::SamplesDb(QObject * parent) : QObject(parent)
 {
-
+  readFromFile();
 }
 
 void SamplesDb::appendResults(const QString &name, const FilteredFrames &results)
@@ -18,10 +18,10 @@ QString SamplesDb::closestSample(const FilteredFrames & recorded)
       CoefficientsResult fromDb = results.at(i);
       QString name = fromDb.first;
       DtwMatrix matrix(fromDb, queried);
-      matrix.printCosts();
-      qDebug() << "==============Path==============";
-      matrix.printPath();
-      costs.push_back(DistancePair(name, matrix.cost(BAND_COEFFICIENT)));
+      double cost = matrix.cost(BAND_COEFFICIENT);
+//      matrix.printCosts();
+//      matrix.printPath();
+      costs.push_back(DistancePair(name, cost));
     }
 
   return closestDistanceSampleName(costs);
@@ -37,18 +37,46 @@ unsigned long SamplesDb::resultsCount()
   return results.size();
 }
 
-QString SamplesDb::closestDistanceSampleName(const DistancePairs &pairs)
+void SamplesDb::saveToFile()
 {
-  double minDistance = std::numeric_limits<double>::max();
-  QString closestDistanceSampleName = pairs[0].first;
-  for(int i =0; i<pairs.size(); ++i){
-      double distance = pairs[i].second;
-      qDebug() << "Distance to "<< pairs[i].first << " : " << distance;
-      if(distance < minDistance && distance != 0){
-          minDistance = distance;
-          closestDistanceSampleName = pairs[i].first;
-        }
-    }
-  return closestDistanceSampleName;
+  QFile file( this->serializedFilePath );
+  file.open( QIODevice::WriteOnly );
+
+  QDataStream stream( &file );
+  stream << results;
+  file.close();
 }
 
+void SamplesDb::readFromFile()
+{
+  QFile file( this->serializedFilePath );
+  if(file.open( QIODevice::ReadOnly )){
+    QDataStream stream( &file );
+    stream >> results;
+    file.close();
+    }
+
+}
+
+
+
+QString SamplesDb::closestDistanceSampleName(const DistancePairs &pairs)
+{
+  QVector< std::pair<std::string, double> > stdPairs;
+  for(int i =0; i<pairs.size(); ++i){
+      stdPairs.push_back(std::pair<std::string, double>(pairs[i].first.toStdString(), pairs[i].second));
+    }
+  qSort(stdPairs.begin(), stdPairs.end(), lessThan);
+  qDebug() << "==================Distanced begin================";
+  for(int i =0; i<pairs.size(); ++i){
+      double distance = stdPairs[i].second;
+      qDebug() << "Distance to "<< QString::fromStdString(stdPairs[i].first) << " : " << distance;
+    }
+  qDebug() << "==================Distanced end==================";
+  return QString::fromStdString(stdPairs[0].first);
+}
+
+bool lessThan(const std::pair<std::string, double> &r1, const std::pair<std::string, double> &r2)
+{
+  return (r1.second < r2.second);
+}

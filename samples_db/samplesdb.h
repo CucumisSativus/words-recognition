@@ -5,9 +5,13 @@
 #include <QVector>
 #include <limits>
 #include <QDebug>
+#include <QFile>
+#include <algorithm>
 #include "singleton/singleton.h"
 #include "../dtw/dtwmatrix.h"
 #include "../defines.h"
+
+bool lessThan(const std::pair<std::string, double> &r1, const std::pair<std::string, double> &r2);
 
 class SamplesDb : public QObject
 {
@@ -19,10 +23,13 @@ public:
   QString closestSample(const FilteredFrames &recorded);
   QString compareLastSample();
   unsigned long resultsCount();
+  void saveToFile();
+  void readFromFile();
 
   CoefficientsResults results;
 
   double BAND_COEFFICIENT  = 1.0;
+  const QString serializedFilePath = "/Users/michal/uczelnia/sound-processing/words-recognition/samples/serialized.dat";
 private:
   QString closestDistanceSampleName(const DistancePairs & pairs);
 signals:

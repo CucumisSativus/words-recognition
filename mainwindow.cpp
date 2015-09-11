@@ -95,17 +95,23 @@ void MainWindow::playRecorded()
 
 void MainWindow::analyseFile()
   {
+  if(SampleDbInstance.resultsCount() != 0 ){
+      ui->buttonCompare->setEnabled(true);
+      return;
+    }
   QDir dir("/Users/michal/uczelnia/sound-processing/words-recognition/samples/");
   dir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
   dir.setSorting(QDir::Size | QDir::Reversed);
 
   QStringList list = dir.entryList();
-  for (int i = 0; i < list.size()/4; ++i) {
+  for (int i = 0; i < list.size(); ++i) {
       QString filename = dir.absoluteFilePath(list.at(i));
       qDebug() << "Anylysing file" << filename;
       performFileAnalysis(filename);
   }
   ui->buttonCompare->setEnabled(true);
+  qDebug() << SampleDbInstance.resultsCount();
+  SampleDbInstance.saveToFile();
 
 }
 
@@ -178,9 +184,9 @@ void MainWindow::performFileAnalysis(QString filename)
     FilteredFrames coefficients = analyser->mfccCoefficents(30, 100);
     qDebug() << "File coefficients calculation finished";
     SampleDbInstance.appendResults(filename, coefficients);
-    coefficientsWindows.push_back(new MfccCoefficientsViewer(coefficients));
-    coefficientsWindows.last()->setTile(filename);
-    coefficientsWindows.last()->show();
+//    coefficientsWindows.push_back(new MfccCoefficientsViewer(coefficients));
+//    coefficientsWindows.last()->setTile(filename);
+//    coefficientsWindows.last()->show();
 
   //  spectrumWindows.push_back(new SpectrumViewer(analyser->transformedFrames()));
   //  spectrumWindows.last()->show();

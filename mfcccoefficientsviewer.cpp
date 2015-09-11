@@ -7,7 +7,7 @@ MfccCoefficientsViewer::MfccCoefficientsViewer(const FilteredFrames &framesCoeff
 {
   ui->setupUi(this);
   setupTable();
-  for(unsigned long i = 0; i< framesCoefficients.size(); ++i){
+  for(int i = 0; i< framesCoefficients.size(); ++i){
       insertCoefficients(i, framesCoefficients.at(i));
     }
   insertDataToPlot(framesCoefficients);
@@ -37,7 +37,7 @@ void MfccCoefficientsViewer::setupTable()
 
 void MfccCoefficientsViewer::insertCoefficients(unsigned long frameNum, const FilteredFrame &coefficients)
 {
-  for(unsigned long i =0; i< coefficients.size(); ++i){
+  for(int i =0; i< coefficients.size(); ++i){
       int row = ui->coefficientsTable->rowCount();
       ui->coefficientsTable->insertRow(row);
       QTableWidgetItem * frameNumberItem = new QTableWidgetItem();
@@ -59,7 +59,7 @@ void MfccCoefficientsViewer::insertCoefficients(unsigned long frameNum, const Fi
 void MfccCoefficientsViewer::insertDataToPlot(const FilteredFrames &framesCoefficients)
 {
   QVector<double> x;
-  for(unsigned long i =0; i< framesCoefficients.size(); ++i){
+  for(int i =0; i< framesCoefficients.size(); ++i){
       x.push_back(i);
     }
   double yMin = 0;
@@ -92,7 +92,7 @@ void MfccCoefficientsViewer::insertDataToPlot(const FilteredFrames &framesCoeffi
 
 
   for(unsigned long i =0; i< coefficientsNum; ++i){
-      for(unsigned long j=0; j< framesCoefficients.size(); ++j){
+      for(int j=0; j< framesCoefficients.size(); ++j){
           double currenty = framesCoefficients.at(j).at(i);
           if(currenty > yMax) yMax = currenty;
           if(currenty < yMin) yMin = currenty;

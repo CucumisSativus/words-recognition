@@ -9,8 +9,8 @@ DtwMatrix::DtwMatrix(const CoefficientsResult &fromDb, const CoefficientsResult 
   matrix.set(0,0,0);
   double gmax = 0.0;
 
-  for(unsigned long i=1; i<fromDb.second.size(); ++i){
-      for(unsigned long j=1; j<recorded.second.size(); ++j){
+  for(int i=1; i<fromDb.second.size(); ++i){
+      for(int j=1; j<recorded.second.size(); ++j){
           //equation 17
           double cost = dist(fromDb.second[i], recorded.second[j]);
           matrix.set(i,j,
@@ -61,15 +61,15 @@ GenericGrid<double> DtwMatrix::bestPath(double bandCoefficient)
 double DtwMatrix::cost(double bandCoefficient)
 {
   bestPath(bandCoefficient);
-  double cost = 0;
-  for(size_t i =0; i< path.numRows(); ++i){
-      for(size_t j =0; j< path.numColumns(); ++j){
-          double fieldCost = path.get(i,j);
-          if(fieldCost != 0){
-              cost += fieldCost;
-            }
-        }
-    }
+  double cost =  matrix.get(matrix.numRows()-1, matrix.numColumns()-1);
+//  for(size_t i =0; i< path.numRows(); ++i){
+//      for(size_t j =0; j< path.numColumns(); ++j){
+//          double fieldCost = path.get(i,j);
+//          if(fieldCost != 0){
+//              cost += matrix.get(i,j);
+//            }
+//        }
+//    }
   return cost/(path.numColumns() + path.numRows());
 }
 
@@ -100,7 +100,7 @@ void DtwMatrix::printPath()
 double DtwMatrix::dist(const FilteredFrame &mfcc1, const FilteredFrame &mfcc2)
 {
   double sum =0.0;
-  for(unsigned long i =0; i < mfcc1.size(); ++i){
+  for(int i =0; i < mfcc1.size(); ++i){
       sum += std::pow(mfcc1[i] - mfcc2[i], 2);
     }
   return std::sqrt(sum);
